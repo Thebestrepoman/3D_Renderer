@@ -12,10 +12,10 @@ namespace renderer {
 class Object {
 public:
     Object() = default;
-    Object(std::vector<Triangle> triangles, Mat4 mrmatrix = Mat4::Identity());
-    Object(const std::string& filename, Mat4 mrmatrix = Mat4::Identity());
+    Object(const std::vector<Triangle>& triangles, const Mat4& mrmatrix = Mat4::Identity());
     const std::vector<Triangle>& GetTriangles() const;
     const Mat4& GetMrmatrix() const;
+    void SetMatrix(const Mat4& mrmatrix);
 
 private:
     std::vector<Triangle> triangles_;

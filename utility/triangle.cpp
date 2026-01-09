@@ -1,7 +1,7 @@
 #include "triangle.h"
 
 namespace renderer {
-Triangle::Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3) : vertexes_({v1, v2, v3}) {
+Triangle::Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3) : vertexes_{v1, v2, v3} {
 }
 
 const Vertex& Triangle::GetV1() const {

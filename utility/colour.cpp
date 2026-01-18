@@ -4,10 +4,11 @@ namespace renderer {
 
 Colour::Colour(double r, double g, double b) : r_(r), g_(g), b_(b){};
 
-void Colour::Check() {
-    r_ = std::max(std::min(1.0, r_), 0.0);
-    g_ = std::max(std::min(1.0, g_), 0.0);
-    b_ = std::max(std::min(1.0, b_), 0.0);
+Colour Colour::Check() {
+    double r = std::max(std::min(1.0, r_), 0.0);
+    double g = std::max(std::min(1.0, g_), 0.0);
+    double b = std::max(std::min(1.0, b_), 0.0);
+    return {r, g, b};
 }
 
 Colour Colour::operator+(const Colour& other) const {

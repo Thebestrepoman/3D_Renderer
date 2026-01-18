@@ -9,6 +9,7 @@ class Vertex {
 public:
     Vertex(const Vec3& coordinates, const Colour& colour, const Vec3& normal);
     Vertex(const Vertex& other);
+    Vertex ChangeeCoords(const Mat3& rmatrix, const Vec3& move) const;
     const Vec3& GetCoordinates() const;
     const Colour& GetColour() const;
     const Vec3& GetNormal() const;

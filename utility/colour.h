@@ -7,7 +7,7 @@ class Colour {
 public:
     Colour() = default;
     Colour(double r, double g, double b);
-    void Check();
+    Colour Check();
     Colour operator+(const Colour& other) const;
     Colour operator-(const Colour& other) const;
     Colour operator*(const double other) const;

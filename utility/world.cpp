@@ -5,11 +5,11 @@ World::World(const std::vector<Object>& objects, const std::vector<Light>& light
     : objects_(objects), lights_(lights) {
 }
 
-const std::vector<Object>& World::GetObjects(){
+const std::vector<Object>& World::GetObjects() const{
     return objects_;
 }
 
-const std::vector<Light>& World::GetLights(){
+const std::vector<Light>& World::GetLights() const{
     return lights_;
 }
 

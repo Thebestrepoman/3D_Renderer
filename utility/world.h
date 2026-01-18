@@ -8,8 +8,8 @@ namespace renderer
     class World {
     public:
         World(const std::vector<Object>& objects, const std::vector<Light>& lights);
-        const std::vector<Object>& GetObjects();
-        const std::vector<Light>& GetLights();
+        const std::vector<Object>& GetObjects() const;
+        const std::vector<Light>& GetLights() const;
         void AddObject(const Object& object);
         void AddLight(const Light& light);
     private:

@@ -2,13 +2,15 @@
 
 namespace renderer {
 Camera::Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Vec3& height_vector,
-               const Vec3& width_vector, double height, double width)
+               const Vec3& width_vector, double height, double width, double farsight)
     : focal_point_(focal_point),
       screen_angle_point_(screen_angle_point),
       height_vector_(height_vector.normalized()),
       width_vector_(width_vector.normalized()),
+      forward_vector_(width_vector.normalized().cross(height_vector.normalized()).normalized()),
       height_(height),
-      width_(width) {
+      width_(width),
+      farsight_(farsight) {
     RecalculatePlanes();
 }
 
@@ -24,7 +26,7 @@ void Camera::RecalculatePlanes() {
 }
 
 void Camera::ClipTriangleWithCamera(const Triangle& triangle, std::vector<Triangle>& clipped, int plane_num) {
-    if (plane_num == 5) {
+    if (plane_num == 4) {
         clipped.push_back(triangle);
     }
     std::variant<std::nullopt_t, Triangle, std::pair<Triangle, Triangle>> clip_res =
@@ -37,7 +39,7 @@ void Camera::ClipTriangleWithCamera(const Triangle& triangle, std::vector<Triang
     }
     if (std::holds_alternative<std::pair<Triangle, Triangle>>(clip_res)) {
         ClipTriangleWithCamera(std::get<std::pair<Triangle, Triangle>>(clip_res).first, clipped, plane_num + 1);
-        ClipTriangleWithCamera(std::get<std::pair<Triangle, Triangle>>(clip_res).second, clipped, plane_num + +1);
+        ClipTriangleWithCamera(std::get<std::pair<Triangle, Triangle>>(clip_res).second, clipped, plane_num + 1);
     }
 }
 
@@ -49,6 +51,29 @@ std::vector<Triangle> Camera::Clip(const World& world) {
         }
     }
     return clipped;
+}
+
+Vertex Camera::ProjectiveTransformationForVertex(const Vertex& vertex) {
+    Vec3 to_point = vertex.GetCoordinates() - focal_point_;
+    double x = to_point.dot(width_vector_);
+    double y = to_point.dot(height_vector_);
+    double z = to_point.dot(forward_vector_);
+    if (z < 1e-5) {
+        z = 1e-5;
+    }
+    x = x / z * width_ / 2;
+    y = y / z * height_ / 2;
+    z = z / farsight_;
+    return Vertex({x, y, z}, vertex.GetColour(), vertex.GetNormal());
+}
+
+std::vector<Triangle> Camera::ProjectiveTransformationForTriangles(const std::vector<Triangle>& clipped_and_colored) {
+    std::vector<Triangle> projected;
+    for (const Triangle& triangle : clipped_and_colored) {
+        projected.emplace_back(ProjectiveTransformationForVertex(triangle.GetV1()),
+                               ProjectiveTransformationForVertex(triangle.GetV2()),
+                               ProjectiveTransformationForVertex(triangle.GetV3()));
+    }
 }
 
 }  // namespace renderer

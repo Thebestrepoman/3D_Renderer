@@ -2,6 +2,8 @@
 
 #include "algebra.h"
 #include "colour.h"
+#include "light.h"
+
 namespace renderer {
 inline const Colour default_colour_k = Colour(0.2, 0.2, 0.2);
 
@@ -16,6 +18,7 @@ public:
     void SetCoordinates(const Vec3& coordinates);
     void SetColour(const Colour& colour);
     void SetNormal(const Vec3& normal);
+    void ApplyLight(const Light& light);
 private:
     Vec3 coordinates_;
     Colour colour_;

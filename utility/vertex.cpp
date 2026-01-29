@@ -36,4 +36,19 @@ void Vertex::SetNormal(const Vec3& normal) {
     normal_ = normal;
 }
 
+void Vertex::ApplyLight(const Light& light) {
+    if (light.lightenum == LightEnum::Ambient) {
+        colour_ += light.Ambient.colour_ * light.Ambient.candella_;
+    } else if (light.lightenum == LightEnum::Directional) {
+        colour_ += light.Directional.colour_ *
+                   (std::max(0.0, -light.Directional.direction_.normalized().dot(normal_))) *
+                   light.Directional.candella_;
+    } else if (light.lightenum == LightEnum::Point) {
+        colour_ += light.Point.colour_ *
+                   (std::max(0.0, (light.Point.coordinates_ - coordinates_).normalized().dot(normal_))) *
+                   light.Point.candella_;
+    }
+    colour_.CheckAndModify();
+}
+
 }  // namespace renderer

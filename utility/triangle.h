@@ -14,6 +14,7 @@ public:
     void SetV1(const Vertex& v);
     void SetV2(const Vertex& v);
     void SetV3(const Vertex& v);
+    void ApplyLight(const Light& light);
 private:
     Vertex vertexes_[3];
 };

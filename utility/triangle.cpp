@@ -29,4 +29,10 @@ void Triangle::SetV2(const Vertex& v) {
 void Triangle::SetV3(const Vertex& v) {
     vertexes_[2] = v;
 }
+
+void Triangle::ApplyLight(const Light& light){
+    vertexes_[0].ApplyLight(light);
+    vertexes_[1].ApplyLight(light);
+    vertexes_[2].ApplyLight(light);
+}
 }  // namespace renderer

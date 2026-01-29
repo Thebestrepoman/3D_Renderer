@@ -5,7 +5,7 @@ Plane::Plane(const Vec3& normal, const Vec3& point) : normal_(normal), d_(-norma
 }
 
 bool Plane::CheckSideForPoint(const Vec3& point) const {
-    return (normal_.dot(point) + d_) > 0.00001;
+    return (normal_.dot(point) + d_) < 0.00001;
 }
 
 Vertex Plane::IntersectEdgeWithPlane(const Vertex& v1, const Vertex& v2) const {

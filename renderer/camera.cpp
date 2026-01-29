@@ -54,15 +54,15 @@ std::vector<Triangle> Camera::Clip(const World& world) {
 }
 
 Vertex Camera::ProjectiveTransformationForVertex(const Vertex& vertex) {
-    Vec3 to_point = vertex.GetCoordinates() - focal_point_;
+    Vec3 to_point = focal_point_ - vertex.GetCoordinates();
     double x = to_point.dot(width_vector_);
     double y = to_point.dot(height_vector_);
     double z = to_point.dot(forward_vector_);
     if (z < 1e-5) {
         z = 1e-5;
     }
-    x = x / z * width_ / 2;
-    y = y / z * height_ / 2;
+    x = (x / z + 1) / 2;
+    y = (y / z + 1) / 2;
     z = z / farsight_;
     return Vertex({x, y, z}, vertex.GetColour(), vertex.GetNormal());
 }
@@ -74,6 +74,7 @@ std::vector<Triangle> Camera::ProjectiveTransformationForTriangles(const std::ve
                                ProjectiveTransformationForVertex(triangle.GetV2()),
                                ProjectiveTransformationForVertex(triangle.GetV3()));
     }
+    return projected;
 }
 
 }  // namespace renderer

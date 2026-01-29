@@ -7,7 +7,7 @@ Camera::Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Ve
       screen_angle_point_(screen_angle_point),
       height_vector_(height_vector.normalized()),
       width_vector_(width_vector.normalized()),
-      forward_vector_(width_vector.normalized().cross(height_vector.normalized()).normalized()),
+      forward_vector_(height_vector.normalized().cross(width_vector.normalized()).normalized()),
       height_(height),
       width_(width),
       farsight_(farsight) {
@@ -50,11 +50,17 @@ std::vector<Triangle> Camera::Clip(const World& world) {
             ClipTriangleWithCamera(tr.ChangeeCoords(obj.GetRmatrix(), obj.GetMove()), clipped);
         }
     }
+    for (Triangle& tr : clipped) {
+        for (const Light& light: world.GetLights()) {
+            tr.ApplyLight(light);
+        }
+    }
+
     return clipped;
 }
 
 Vertex Camera::ProjectiveTransformationForVertex(const Vertex& vertex) {
-    Vec3 to_point = focal_point_ - vertex.GetCoordinates();
+    Vec3 to_point = vertex.GetCoordinates() - focal_point_;
     double x = to_point.dot(width_vector_);
     double y = to_point.dot(height_vector_);
     double z = to_point.dot(forward_vector_);

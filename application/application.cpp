@@ -6,7 +6,7 @@ namespace renderer {
 Application::Application()
     : world_(),
       camera_(start_focal_point, start_screen_angle_point, start_height_vector, start_width_vector, start_camera_height,
-              start_camera_width, farsight),
+              start_camera_width, farsight, nearsight),
       screen_(start_width, start_height),
       runtime_(start_width, start_height),
       view_(runtime_.GetWindow()),

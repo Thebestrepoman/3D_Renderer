@@ -8,12 +8,20 @@ namespace renderer {
 class Camera {
 public:
     Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Vec3& height_vector, const Vec3& width_vector,
-           double height, double width, double farsight);
-    void RecalculatePlanes();
+           double height, double width, double farsight, double nearsight);
+    std::vector<Plane> CalculatePlanes();
     void ClipTriangleWithCamera(const Triangle& triangle, std::vector<Triangle>& clipped, int plane_num = 0);
     std::vector<Triangle> Clip(const World& world);
     Vertex ProjectiveTransformationForVertex(const Vertex& vertex);
     std::vector<Triangle> ProjectiveTransformationForTriangles(const std::vector<Triangle>& clipped);
+    const Vec3& GetFocalPoint() const;
+    const Vec3& GetScreenAnglePoint() const;
+    const Vec3& GetWidthVector() const;
+    const Vec3& GetHeightVector() const;
+    Vec3 GetForwardVector() const;
+    double GetHeight() const;
+    double GetWidth() const;
+    double GetFarsight() const;
 
 private:
     Vec3 focal_point_;
@@ -25,5 +33,6 @@ private:
     double width_;
     std::vector<Plane> planes_;
     double farsight_;
+    double nearsight_;
 };
 }  // namespace renderer

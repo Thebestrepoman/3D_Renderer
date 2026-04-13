@@ -2,7 +2,7 @@
 
 namespace renderer {
 Camera::Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Vec3& height_vector,
-               const Vec3& width_vector, double height, double width, double farsight)
+               const Vec3& width_vector, double height, double width, double farsight, double nearsight)
     : focal_point_(focal_point),
       screen_angle_point_(screen_angle_point),
       height_vector_(height_vector.normalized()),
@@ -10,37 +10,8 @@ Camera::Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Ve
       forward_vector_(height_vector.normalized().cross(width_vector.normalized()).normalized()),
       height_(height),
       width_(width),
-      farsight_(farsight) {
-    RecalculatePlanes();
-}
-
-void Camera::RecalculatePlanes() {
-    planes_.clear();
-    Vec3 v2 = screen_angle_point_ + width_ * width_vector_;
-    Vec3 v3 = screen_angle_point_ + height_ * height_vector_;
-    Vec3 v4 = screen_angle_point_ + height_ * height_vector_ + width_ * width_vector_;
-    planes_.emplace_back((screen_angle_point_ - focal_point_).cross(v2 - focal_point_).normalized(), focal_point_);
-    planes_.emplace_back((v2 - focal_point_).cross(v4 - focal_point_).normalized(), focal_point_);
-    planes_.emplace_back((v4 - focal_point_).cross(v3 - focal_point_).normalized(), focal_point_);
-    planes_.emplace_back((v3 - focal_point_).cross(screen_angle_point_ - focal_point_).normalized(), focal_point_);
-}
-
-void Camera::ClipTriangleWithCamera(const Triangle& triangle, std::vector<Triangle>& clipped, int plane_num) {
-    if (plane_num == 4) {
-        clipped.push_back(triangle);
-    }
-    std::variant<std::nullopt_t, Triangle, std::pair<Triangle, Triangle>> clip_res =
-        planes_[plane_num].ClipTriangleWithPlane(triangle);
-    if (std::holds_alternative<std::nullopt_t>(clip_res)) {
-        return;
-    }
-    if (std::holds_alternative<Triangle>(clip_res)) {
-        ClipTriangleWithCamera(std::get<Triangle>(clip_res), clipped, plane_num + 1);
-    }
-    if (std::holds_alternative<std::pair<Triangle, Triangle>>(clip_res)) {
-        ClipTriangleWithCamera(std::get<std::pair<Triangle, Triangle>>(clip_res).first, clipped, plane_num + 1);
-        ClipTriangleWithCamera(std::get<std::pair<Triangle, Triangle>>(clip_res).second, clipped, plane_num + 1);
-    }
+      farsight_(farsight),
+      nearsight_(nearsight) {
 }
 
 std::vector<Triangle> Camera::Clip(const World& world) {
@@ -51,7 +22,7 @@ std::vector<Triangle> Camera::Clip(const World& world) {
         }
     }
     for (Triangle& tr : clipped) {
-        for (const Light& light: world.GetLights()) {
+        for (const Light& light : world.GetLights()) {
             tr.ApplyLight(light);
         }
     }
@@ -81,6 +52,31 @@ std::vector<Triangle> Camera::ProjectiveTransformationForTriangles(const std::ve
                                ProjectiveTransformationForVertex(triangle.GetV3()));
     }
     return projected;
+}
+
+const Vec3& Camera::GetFocalPoint() const {
+    return focal_point_;
+}
+const Vec3& Camera::GetScreenAnglePoint() const {
+    return screen_angle_point_;
+}
+const Vec3& Camera::GetWidthVector() const {
+    return width_vector_;
+}
+const Vec3& Camera::GetHeightVector() const {
+    return height_vector_;
+}
+Vec3 Camera::GetForwardVector() const {
+    return height_vector_.normalized().cross(width_vector_.normalized()).normalized();
+}
+double Camera::GetHeight() const {
+    return height_;
+}
+double Camera::GetWidth() const {
+    return width_;
+}
+double Camera::GetFarsight() const{
+    return farsight_;
 }
 
 }  // namespace renderer

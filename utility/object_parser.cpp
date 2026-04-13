@@ -29,7 +29,7 @@ std::vector<Triangle> ExtractFromObj(const std::string& filename) {
     sum_points /= num_points;
     std::vector<Vec3> normals(points.size(), Vec3::Zero());
     for (size_t i = 0; i < faces.size(); i++) {
-        Vec3 fnorm = CalculateNormalForThreeVectors(points[faces[i][0] - 1], points[faces[i][1] - 1], points[faces[i][2] - 1]);
+        Vec3 fnorm = CalculateOrientedNormal(points[faces[i][0] - 1], points[faces[i][1] - 1], points[faces[i][2] - 1]);
         Vec3 center = (points[faces[i][0] - 1] + points[faces[i][1] - 1] + points[faces[i][2] - 1]) / 3;
         if ((center - sum_points).dot(fnorm) < 0) {
             fnorm = fnorm;

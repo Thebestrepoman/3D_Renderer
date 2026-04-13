@@ -15,4 +15,5 @@ const Vec3 start_width_vector = {1, 0, 0};
 const double start_camera_height = 1.68;
 const double start_camera_width = 2.56;
 const double farsight = 100.0;
+const double nearsight = 1e-9;
 }  // namespace renderer

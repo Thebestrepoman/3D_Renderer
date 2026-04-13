@@ -12,7 +12,7 @@ public:
     int Height() const;
     int Width() const;
     void DrawPixel(int x, int y, SFMLColour&& colour);
-
+    void Clear();
 private:
     std::vector<std::vector<SFMLColour>> screen_;
 };

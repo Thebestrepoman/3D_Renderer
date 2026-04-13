@@ -5,6 +5,8 @@
 #include "../renderer/screen.h"
 #include "../renderer/view.h"
 #include "../utility/world.h"
+#include "../renderer/renderer.h"
+#include "eventprocessor.h"
 
 namespace renderer {
 
@@ -19,6 +21,8 @@ private:
     Screen screen_;
     RunTime runtime_;
     View view_;
+    EventProcessor eveproc_;
+    Renderer renderer_;
 };
 
 }  // namespace renderer

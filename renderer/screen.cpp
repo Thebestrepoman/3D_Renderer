@@ -16,4 +16,12 @@ int Screen::Width() const {
 void Screen::DrawPixel(int x, int y, SFMLColour&& colour) {
     screen_[y][x] = std::move(colour);
 }
+
+void Screen::Clear() {
+    for (size_t i = 0; i < screen_.size(); i++) {
+        for (size_t j = 0; j < screen_[0].size(); j++) {
+            screen_[i][j] = {0, 0, 0};
+        }
+    }
+}
 }  // namespace renderer

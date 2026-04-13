@@ -4,10 +4,28 @@
 
 namespace renderer {
 Application::Application()
-    : camera_(start_focal_point, start_screen_angle_point, start_height_vector, start_width_vector, start_camera_height,
+    : world_(),
+      camera_(start_focal_point, start_screen_angle_point, start_height_vector, start_width_vector, start_camera_height,
               start_camera_width, farsight),
       screen_(start_width, start_height),
       runtime_(start_width, start_height),
-      view_(runtime_.GetWindow()) {
+      view_(runtime_.GetWindow()),
+      eveproc_(),
+      renderer_() {
+}
+
+void Application::Run() {
+    while (runtime_.IsOpen()) {
+        sf::Event event;
+        while (runtime_.PollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                runtime_.Close();
+            } else {
+                eveproc_.HandleEvent(event, camera_);
+            }
+        }
+        screen_ = std::move(renderer_.Render(camera_, world_, std::move(screen_)));
+        view_.show(screen_);
+    }
 }
 }  // namespace renderer

@@ -4,7 +4,7 @@ namespace renderer {
 Triangle::Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3) : vertexes_{v1, v2, v3} {
 }
 
-Triangle Triangle::ChangeeCoords(const Mat3& rmatrix, const Vec3& move) const {
+Triangle Triangle::ChangeCoords(const Mat3& rmatrix, const Vec3& move) const {
     return {vertexes_[0].ChangeeCoords(rmatrix, move), vertexes_[1].ChangeeCoords(rmatrix, move),
             vertexes_[2].ChangeeCoords(rmatrix, move)};
 }

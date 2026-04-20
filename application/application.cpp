@@ -4,7 +4,7 @@
 
 namespace renderer {
 Application::Application()
-    : world_(),
+    : world_(start_object, {}),
       camera_(start_focal_point, start_screen_angle_point, start_height_vector, start_width_vector, start_camera_height,
               start_camera_width, farsight, nearsight),
       screen_(start_width, start_height),

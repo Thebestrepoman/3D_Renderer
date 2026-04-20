@@ -14,21 +14,6 @@ Camera::Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Ve
       nearsight_(nearsight) {
 }
 
-std::vector<Triangle> Camera::Clip(const World& world) {
-    std::vector<Triangle> clipped;
-    for (const Object& obj : world.GetObjects()) {
-        for (const Triangle& tr : obj.GetTriangles()) {
-            ClipTriangleWithCamera(tr.ChangeeCoords(obj.GetRmatrix(), obj.GetMove()), clipped);
-        }
-    }
-    for (Triangle& tr : clipped) {
-        for (const Light& light : world.GetLights()) {
-            tr.ApplyLight(light);
-        }
-    }
-
-    return clipped;
-}
 
 Vertex Camera::ProjectiveTransformationForVertex(const Vertex& vertex) {
     Vec3 to_point = vertex.GetCoordinates() - focal_point_;

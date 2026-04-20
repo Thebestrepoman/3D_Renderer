@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include <iostream>
 
 namespace renderer {
 Screen Renderer::Render(const Camera& camera, const World& world, Screen&& screen) const {
@@ -25,14 +26,15 @@ std::vector<Plane> CalculatePlanes(const Camera& camera) {
     return planes;
 }
 
-std::vector<Triangle> ClipTriangleWithPlanes(Triangle& triangle, std::vector<Triangle>&& clipped,
+std::vector<Triangle> ClipTriangleWithPlanes(const Triangle& triangle, std::vector<Triangle>&& clipped,
                                              const std::vector<Plane>& planes, int cur_plane = 0) {
     if (cur_plane == 4) {
+        clipped.push_back(triangle);
         return clipped;
     }
     std::vector<Triangle> clipped_triangle = std::move(planes[cur_plane].ClipTriangleWithPlane(triangle));
     if (clipped_triangle.size() == 0) {
-        clipped = std::move(ClipTriangleWithPlanes(triangle, std::move(clipped), planes, cur_plane + 1));
+        return clipped;
     }
     if (clipped_triangle.size() == 1) {
         clipped = std::move(ClipTriangleWithPlanes(clipped_triangle[0], std::move(clipped), planes, cur_plane + 1));
@@ -41,6 +43,7 @@ std::vector<Triangle> ClipTriangleWithPlanes(Triangle& triangle, std::vector<Tri
         clipped = std::move(ClipTriangleWithPlanes(clipped_triangle[0], std::move(clipped), planes, cur_plane + 1));
         clipped = std::move(ClipTriangleWithPlanes(clipped_triangle[1], std::move(clipped), planes, cur_plane + 1));
     }
+    return clipped;
 }
 
 std::vector<Triangle> Renderer::ClipWorldWithCamera(const Camera& camera, const World& world) const {
@@ -48,7 +51,11 @@ std::vector<Triangle> Renderer::ClipWorldWithCamera(const Camera& camera, const 
     std::vector<Triangle> clipped;
     for (const auto& object : world.GetObjects()) {
         for (const auto& triangle : object.GetTriangles()) {
+            clipped = ClipTriangleWithPlanes(triangle.ChangeCoords(object.GetRmatrix(), object.GetMove()), std::move(clipped),
+                                             camera_planes);
         }
     }
+    std::cout << clipped.size();
+    return clipped;
 }
 }  // namespace renderer

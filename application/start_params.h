@@ -3,6 +3,7 @@
 #include "../renderer/screen.h"
 #include "../renderer/view.h"
 #include "../utility/world.h"
+#include "../utility/object_parser.h"
 
 namespace renderer {
 constexpr ScreenHeight start_height = static_cast<ScreenHeight>(1600);
@@ -16,4 +17,6 @@ const double start_camera_height = 1.68;
 const double start_camera_width = 2.56;
 const double farsight = 100.0;
 const double nearsight = 1e-9;
+
+std::vector<Object> start_object = {{ExtractFromObj("../tests/a.obj")}};
 }  // namespace renderer

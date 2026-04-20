@@ -27,15 +27,15 @@ std::vector<Triangle> Plane::ClipTriangleWithPlane(const Triangle& triangle) con
     if (sum == 1) {
         if (inside[0] == 1) {
             clipped.emplace_back(triangle.GetV1(), IntersectEdgeWithPlane(triangle.GetV1(), triangle.GetV2()),
-                            IntersectEdgeWithPlane(triangle.GetV1(), triangle.GetV3()));
+                                 IntersectEdgeWithPlane(triangle.GetV1(), triangle.GetV3()));
         }
         if (inside[1] == 1) {
             clipped.emplace_back(triangle.GetV2(), IntersectEdgeWithPlane(triangle.GetV2(), triangle.GetV1()),
-                            IntersectEdgeWithPlane(triangle.GetV2(), triangle.GetV3()));
+                                 IntersectEdgeWithPlane(triangle.GetV2(), triangle.GetV3()));
         }
         if (inside[2] == 1) {
             clipped.emplace_back(triangle.GetV3(), IntersectEdgeWithPlane(triangle.GetV3(), triangle.GetV2()),
-                            IntersectEdgeWithPlane(triangle.GetV3(), triangle.GetV1()));
+                                 IntersectEdgeWithPlane(triangle.GetV3(), triangle.GetV1()));
         }
     }
     if (sum == 2) {
@@ -57,6 +57,9 @@ std::vector<Triangle> Plane::ClipTriangleWithPlane(const Triangle& triangle) con
             clipped.emplace_back(triangle.GetV1(), v3, v4);
             clipped.emplace_back(triangle.GetV1(), triangle.GetV2(), v4);
         }
+    }
+    if (sum == 3) {
+        clipped.push_back(triangle);
     }
     return clipped;
 }

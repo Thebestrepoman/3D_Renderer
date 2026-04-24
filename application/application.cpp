@@ -4,12 +4,12 @@
 
 namespace renderer {
 Application::Application()
-    : world_(start_object, {}),
+    : world_(start_object, start_lights),
       camera_(start_focal_point, start_screen_angle_point, start_height_vector, start_width_vector, start_camera_height,
               start_camera_width, farsight, nearsight),
       screen_(start_width, start_height),
       runtime_(start_width, start_height),
-      view_(runtime_.GetWindow()),
+      view_(runtime_.GetWindow(), start_width, start_height),
       eveproc_(),
       renderer_() {
 }

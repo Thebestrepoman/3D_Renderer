@@ -2,8 +2,8 @@
 #include "../renderer/runtime.h"
 #include "../renderer/screen.h"
 #include "../renderer/view.h"
-#include "../utility/world.h"
 #include "../utility/object_parser.h"
+#include "../utility/world.h"
 
 namespace renderer {
 constexpr ScreenHeight start_height = static_cast<ScreenHeight>(1600);
@@ -19,4 +19,6 @@ const double farsight = 100.0;
 const double nearsight = 1e-9;
 
 std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/a.obj"))}};
+std::vector<Light> start_lights = {{Light::CreateDirectionalLight(0.8, {0.0, 0.0, 1.0}, {1.0, 0.0, 0.0})},  {Light::CreateDirectionalLight(0.8, {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0})}};
+
 }  // namespace renderer

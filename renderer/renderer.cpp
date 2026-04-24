@@ -7,7 +7,8 @@ Screen Renderer::Render(const Camera& camera, const World& world, Screen&& scree
     screen.Clear();
     std::vector<Triangle> clipped = std::move(ClipWorldWithCamera(camera, world));
     std::vector<Triangle> enlightned = std::move(ApplyLightToTriangles(camera, world, std::move(clipped)));
-    std::vector<Triangle> projected = std::move(ProjectTrianglesToPlane(camera, std::move(enlightned))); 
+    std::vector<Triangle> projected = std::move(ProjectTrianglesToPlane(camera, std::move(enlightned)));
+    screen = std::move(Renderer::DrawProjectedOnScreen(std::move(screen), std::move(projected)));
     return screen;
 }
 
@@ -116,7 +117,8 @@ Vertex ProjectiveTransformationForVertex(const Camera& camera, const Vertex& ver
     return Vertex({x, y, z}, vertex.GetColour(), vertex.GetNormal());
 }
 
-std::vector<Triangle> Renderer::ProjectTrianglesToPlane(const Camera& camera, std::vector<Triangle>&& enlightened) const {
+std::vector<Triangle> Renderer::ProjectTrianglesToPlane(const Camera& camera,
+                                                        std::vector<Triangle>&& enlightened) const {
     std::vector<Triangle> projected;
     for (const Triangle& triangle : enlightened) {
         projected.emplace_back(ProjectiveTransformationForVertex(camera, triangle.GetV1()),
@@ -124,5 +126,49 @@ std::vector<Triangle> Renderer::ProjectTrianglesToPlane(const Camera& camera, st
                                ProjectiveTransformationForVertex(camera, triangle.GetV3()));
     }
     return projected;
+}
+
+Screen Renderer::DrawProjectedOnScreen(Screen&& screen, std::vector<Triangle>&& projected) const {
+    for (const Triangle& triangle : projected) {
+        Vec3 coord1 = triangle.GetV1().GetCoordinates();
+        coord1.x() *= screen.Width();
+        coord1.y() *= screen.Height();
+        Vec3 coord2 = triangle.GetV2().GetCoordinates();
+        coord2.x() *= screen.Width();
+        coord2.y() *= screen.Height();
+        Vec3 coord3 = triangle.GetV3().GetCoordinates();
+        coord3.x() *= screen.Width();
+        coord3.y() *= screen.Height();
+        int minx = std::max(0.0, std::floor(std::min(coord1.x(), std::min(coord2.x(), coord3.x()))));
+        int maxx =
+            std::min(1.0 * (screen.Width() - 1), std::ceil(std::max(coord1.x(), std::max(coord2.x(), coord3.x()))));
+        int miny = std::max(0.0, std::floor(std::min(coord1.y(), std::min(coord2.y(), coord3.y()))));
+        int maxy =
+            std::min(1.0 * (screen.Height() - 1), std::ceil(std::max(coord1.y(), std::max(coord2.y(), coord3.y()))));
+        double square = (coord3 - coord1).cross(coord2 - coord1).z();
+        if (abs(square) <= 1e-6) {
+            continue;
+        }
+        for (int i = miny; i <= maxy; i++) {
+            for (int j = minx; j <= maxx; j++) {
+                Vec3 pixel(j + 0.5, i + 0.5, 0);
+                double square1 = (pixel - coord2).cross(coord3 - coord2).z() / square;
+                double square2 = (pixel - coord3).cross(coord1 - coord3).z() / square;
+                double square3 = (pixel - coord1).cross(coord2 - coord1).z() / square;
+                if ((square1 >= -1e-6) && (square2 >= -1e-6) && (square3 >= -1e-6)) {
+                    double newz = coord1.z() * square1 + coord2.z() * square2 + coord3.z() * square3;
+                    if (newz < screen.GetZ(j, i)) {
+                        screen.SetZ(j, i, coord1.z() * square1 + coord2.z() * square2 + coord3.z() * square3);
+                        screen.DrawPixel(
+                            j, i,
+                            (triangle.GetV1().GetColour() * square1 + triangle.GetV2().GetColour() * square2 +
+                             triangle.GetV3().GetColour() * square3)
+                                .Check());
+                    }
+                }
+            }
+        }
+    }
+    return screen;
 }
 }  // namespace renderer

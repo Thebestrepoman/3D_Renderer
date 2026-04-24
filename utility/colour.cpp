@@ -29,6 +29,11 @@ Colour Colour::operator*(const double other) const {
     return Colour(r_ * other, g_ * other, b_ * other);
 }
 
+Colour Colour::operator*(const Colour& other) const {
+    return Colour(r_ * other.r_, g_ * other.g_, b_ * other.b_);
+}
+
+
 Colour& Colour::operator+=(const Colour& other) {
     r_ += other.r_;
     g_ += other.g_;
@@ -47,6 +52,13 @@ Colour& Colour::operator*=(const double other) {
     r_ *= other;
     g_ *= other;
     b_ *= other;
+    return *this;
+}
+
+Colour& Colour::operator*=(const Colour& other) {
+    r_ *= other.r_;
+    g_ *= other.g_;
+    b_ *= other.b_;
     return *this;
 }
 

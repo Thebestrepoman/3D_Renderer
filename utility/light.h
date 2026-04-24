@@ -3,12 +3,9 @@
 #include "colour.h"
 #include "algebra.h"
 
+#include <variant>
+
 namespace renderer {
-enum struct LightEnum {
-    Ambient,
-    Point,
-    Directional,
-};
 
 struct AmbientLight {
     double candella_;
@@ -27,14 +24,15 @@ struct Directionalight {
     Vec3 direction_;
 };
 
+using LightVariant = std::variant<AmbientLight, PointLight, Directionalight>;
+
 struct Light {
-    LightEnum lightenum;
-    AmbientLight Ambient;
-    PointLight Point;
-    Directionalight Directional;
+    LightVariant data;
 
     static Light CreateAmbientLight(double candella, const Colour& colour);
-    static Light CreatePointLight(double candella, const Colour& colou, const Vec3& coordinates);
-    static Light CreateDirectionalLight(double candella, const Colour& colou, const Vec3& direction);
+
+    static Light CreatePointLight(double candella, const Colour& colour, const Vec3& coordinates);
+
+    static Light CreateDirectionalLight(double candella, const Colour& colour, const Vec3& direction);
 };
 }  // namespace renderer

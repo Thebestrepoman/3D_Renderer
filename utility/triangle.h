@@ -11,10 +11,11 @@ public:
     const Vertex& GetV1() const;
     const Vertex& GetV2() const;
     const Vertex& GetV3() const;
+    const Vertex& GetVi(int i) const;
     void SetV1(const Vertex& v);
     void SetV2(const Vertex& v);
     void SetV3(const Vertex& v);
-    void ApplyLight(const Light& light);
+    void ChangeColourForVertex(const Colour& colour_, int i);
 private:
     Vertex vertexes_[3];
 };

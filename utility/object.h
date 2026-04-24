@@ -12,7 +12,7 @@ namespace renderer {
 class Object {
 public:
     Object() = default;
-    Object(const std::vector<Triangle>& triangles, const Mat3& mrmatrix = Mat3::Identity(), const Vec3& move = Vec3::Zero());
+    Object(const std::vector<Triangle>&& triangles, const Mat3& mrmatrix = Mat3::Identity(), const Vec3& move = Vec3::Zero());
     const std::vector<Triangle>& GetTriangles() const;
     const Mat3& GetRmatrix() const;
     void SetRmatrix(const Mat3& mrmatrix);

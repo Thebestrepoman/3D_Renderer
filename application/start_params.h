@@ -18,5 +18,5 @@ const double start_camera_width = 2.56;
 const double farsight = 100.0;
 const double nearsight = 1e-9;
 
-std::vector<Object> start_object = {{ExtractFromObj("../tests/a.obj")}};
+std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/a.obj"))}};
 }  // namespace renderer

@@ -11,14 +11,14 @@ class Vertex {
 public:
     Vertex(const Vec3& coordinates, const Colour& colour, const Vec3& normal);
     Vertex(const Vertex& other);
-    Vertex ChangeeCoords(const Mat3& rmatrix, const Vec3& move) const;
+    Vertex ChangeCoords(const Mat3& rmatrix, const Vec3& move) const;
     const Vec3& GetCoordinates() const;
     const Colour& GetColour() const;
     const Vec3& GetNormal() const;
     void SetCoordinates(const Vec3& coordinates);
     void SetColour(const Colour& colour);
     void SetNormal(const Vec3& normal);
-    void ApplyLight(const Light& light);
+    void ChangeColour(const Colour& colour);
 private:
     Vec3 coordinates_;
     Colour colour_;

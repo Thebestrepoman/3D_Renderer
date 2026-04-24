@@ -12,9 +12,11 @@ public:
     Colour operator+(const Colour& other) const;
     Colour operator-(const Colour& other) const;
     Colour operator*(const double other) const;
+    Colour operator*(const Colour& other) const;
     Colour& operator+=(const Colour& other);
     Colour& operator-=(const Colour& other);
     Colour& operator*=(const double other);
+    Colour& operator*=(const Colour& other);
     double GetR() const;
     double GetG() const;
     double GetB() const;

@@ -1,4 +1,5 @@
 #include "renderer.h"
+
 #include <iostream>
 
 namespace renderer {
@@ -51,11 +52,45 @@ std::vector<Triangle> Renderer::ClipWorldWithCamera(const Camera& camera, const 
     std::vector<Triangle> clipped;
     for (const auto& object : world.GetObjects()) {
         for (const auto& triangle : object.GetTriangles()) {
-            clipped = ClipTriangleWithPlanes(triangle.ChangeCoords(object.GetRmatrix(), object.GetMove()), std::move(clipped),
-                                             camera_planes);
+            clipped = ClipTriangleWithPlanes(triangle.ChangeCoords(object.GetRmatrix(), object.GetMove()),
+                                             std::move(clipped), camera_planes);
         }
     }
     std::cout << clipped.size();
+    return clipped;
+}
+
+std::vector<Triangle> Renderer::ApplyLightToTriangles(const Camera& camera, const World& world,
+                                                      std::vector<Triangle>&& clipped) const {
+    for (auto& triangle : clipped) {
+        for (int i = 0; i < 3; i++) {
+            Colour light_res = {0, 0, 0};
+            for (const auto& light : world.GetLights()) {
+                std::visit(
+                    [&](const auto& l) {
+                        using T = std::decay_t<decltype(l)>;
+                        if constexpr (std::is_same_v<T, AmbientLight>) {
+                            light_res += l.colour_ * l.candella_;
+                        } else if constexpr (std::is_same_v<T, Directionalight>) {
+                            light_res += l.colour_ *
+                                         std::max(0.0, -l.direction_.normalized().dot(triangle.GetVi(i).GetNormal())) *
+                                         l.candella_;
+                        } else if constexpr (std::is_same_v<T, PointLight>) {
+                            Vec3 light_dir = l.coordinates_ - triangle.GetVi(i).GetCoordinates();
+                            double distance_sq = light_dir.dot(light_dir);
+                            if (distance_sq > 1e-6) {
+                                double attenuation = 1.0 / distance_sq;
+                                light_res += l.colour_ *
+                                             std::max(0.0, light_dir.normalized().dot(triangle.GetVi(i).GetNormal())) *
+                                             l.candella_ * attenuation;
+                            }
+                        }
+                    },
+                    light.data);
+            }
+            triangle.ChangeColourForVertex(light_res, i);
+        }
+    }
     return clipped;
 }
 }  // namespace renderer

@@ -1,8 +1,8 @@
 #include "object.h"
 
 namespace renderer {
-Object::Object(const std::vector<Triangle>& triangles, const Mat3& rmatrix, const Vec3& move)
-    : triangles_(triangles), rmatrix_(rmatrix), move_(move) {
+Object::Object(const std::vector<Triangle>&& triangles, const Mat3& rmatrix, const Vec3& move)
+    : triangles_(std::move(triangles)), rmatrix_(rmatrix), move_(move) {
 }
 const std::vector<Triangle>& Object::GetTriangles() const {
     return triangles_;

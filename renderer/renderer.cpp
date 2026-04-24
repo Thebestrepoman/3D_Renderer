@@ -6,6 +6,8 @@ namespace renderer {
 Screen Renderer::Render(const Camera& camera, const World& world, Screen&& screen) const {
     screen.Clear();
     std::vector<Triangle> clipped = std::move(ClipWorldWithCamera(camera, world));
+    std::vector<Triangle> enlightned = std::move(ApplyLightToTriangles(camera, world, std::move(clipped)));
+    std::vector<Triangle> projected = std::move(ProjectTrianglesToPlane(camera, std::move(enlightned))); 
     return screen;
 }
 
@@ -56,7 +58,6 @@ std::vector<Triangle> Renderer::ClipWorldWithCamera(const Camera& camera, const 
                                              std::move(clipped), camera_planes);
         }
     }
-    std::cout << clipped.size();
     return clipped;
 }
 
@@ -92,5 +93,36 @@ std::vector<Triangle> Renderer::ApplyLightToTriangles(const Camera& camera, cons
         }
     }
     return clipped;
+}
+
+Vertex ProjectiveTransformationForVertex(const Camera& camera, const Vertex& vertex) {
+    const Vec3& screen_angle_point = camera.GetScreenAnglePoint();
+    double width = camera.GetWidth();
+    double height = camera.GetHeight();
+    const Vec3& width_vector = camera.GetWidthVector();
+    const Vec3& height_vector = camera.GetHeightVector();
+    const Vec3& forward_vector = camera.GetForwardVector();
+    const Vec3& focal_point = camera.GetFocalPoint();
+    Vec3 to_point = vertex.GetCoordinates() - focal_point;
+    double x = to_point.dot(width_vector);
+    double y = to_point.dot(height_vector);
+    double z = to_point.dot(forward_vector);
+    if (z < 1e-5) {
+        z = 1e-5;
+    }
+    x = (x / z + 1) / 2;
+    y = (y / z + 1) / 2;
+    z = z / camera.GetFarsight();
+    return Vertex({x, y, z}, vertex.GetColour(), vertex.GetNormal());
+}
+
+std::vector<Triangle> Renderer::ProjectTrianglesToPlane(const Camera& camera, std::vector<Triangle>&& enlightened) const {
+    std::vector<Triangle> projected;
+    for (const Triangle& triangle : enlightened) {
+        projected.emplace_back(ProjectiveTransformationForVertex(camera, triangle.GetV1()),
+                               ProjectiveTransformationForVertex(camera, triangle.GetV2()),
+                               ProjectiveTransformationForVertex(camera, triangle.GetV3()));
+    }
+    return projected;
 }
 }  // namespace renderer

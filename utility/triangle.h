@@ -15,7 +15,7 @@ public:
     void SetV1(const Vertex& v);
     void SetV2(const Vertex& v);
     void SetV3(const Vertex& v);
-    void ChangeColourForVertex(const Colour& colour_, int i);
+    void ChangeColourForVertex(const Colour& colour, int i);
 private:
     Vertex vertexes_[3];
 };

@@ -9,8 +9,6 @@ class Camera {
 public:
     Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Vec3& height_vector, const Vec3& width_vector,
            double height, double width, double farsight, double nearsight);
-    Vertex ProjectiveTransformationForVertex(const Vertex& vertex);
-    std::vector<Triangle> ProjectiveTransformationForTriangles(const std::vector<Triangle>& clipped);
     const Vec3& GetFocalPoint() const;
     const Vec3& GetScreenAnglePoint() const;
     const Vec3& GetWidthVector() const;

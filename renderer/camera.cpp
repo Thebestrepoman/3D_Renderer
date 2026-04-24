@@ -14,31 +14,6 @@ Camera::Camera(const Vec3& focal_point, const Vec3& screen_angle_point, const Ve
       nearsight_(nearsight) {
 }
 
-
-Vertex Camera::ProjectiveTransformationForVertex(const Vertex& vertex) {
-    Vec3 to_point = vertex.GetCoordinates() - focal_point_;
-    double x = to_point.dot(width_vector_);
-    double y = to_point.dot(height_vector_);
-    double z = to_point.dot(forward_vector_);
-    if (z < 1e-5) {
-        z = 1e-5;
-    }
-    x = (x / z + 1) / 2;
-    y = (y / z + 1) / 2;
-    z = z / farsight_;
-    return Vertex({x, y, z}, vertex.GetColour(), vertex.GetNormal());
-}
-
-std::vector<Triangle> Camera::ProjectiveTransformationForTriangles(const std::vector<Triangle>& clipped_and_colored) {
-    std::vector<Triangle> projected;
-    for (const Triangle& triangle : clipped_and_colored) {
-        projected.emplace_back(ProjectiveTransformationForVertex(triangle.GetV1()),
-                               ProjectiveTransformationForVertex(triangle.GetV2()),
-                               ProjectiveTransformationForVertex(triangle.GetV3()));
-    }
-    return projected;
-}
-
 const Vec3& Camera::GetFocalPoint() const {
     return focal_point_;
 }

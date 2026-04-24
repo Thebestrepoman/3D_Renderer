@@ -34,8 +34,8 @@ void Triangle::SetV3(const Vertex& v) {
     vertexes_[2] = v;
 }
 
-void Triangle::ChangeColourForVertex(const Colour& colour_, int i){
-    vertexes_[i].ChangeColour(colour_);
+void Triangle::ChangeColourForVertex(const Colour& colour, int i){
+    vertexes_[i].ChangeColour(colour);
 }
 
 }  // namespace renderer

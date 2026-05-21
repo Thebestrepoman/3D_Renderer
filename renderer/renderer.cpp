@@ -97,26 +97,29 @@ std::vector<Triangle> Renderer::ApplyLightToTriangles(const Camera& camera, cons
 }
 
 Vertex ProjectiveTransformationForVertex(const Camera& camera, const Vertex& vertex) {
-    const Vec3& screen_angle_point = camera.GetScreenAnglePoint();
-    double width = camera.GetWidth();
-    double height = camera.GetHeight();
+    const Vec3& focal_point = camera.GetFocalPoint();
     const Vec3& width_vector = camera.GetWidthVector();
     const Vec3& height_vector = camera.GetHeightVector();
     const Vec3& forward_vector = camera.GetForwardVector();
-    const Vec3& focal_point = camera.GetFocalPoint();
+    
     Vec3 to_point = vertex.GetCoordinates() - focal_point;
+    
     double x = to_point.dot(width_vector);
     double y = to_point.dot(height_vector);
     double z = to_point.dot(forward_vector);
+    
     if (z < 1e-5) {
         z = 1e-5;
     }
-    x = (x / z + 1) / 2;
-    y = (y / z + 1) / 2;
+    double projected_x = x / z;
+    double projected_y = y / z;
+    double half_width = camera.GetWidth() / 2.0; 
+    double half_height = camera.GetHeight() / 2.0; 
+    x = (projected_x / half_width + 1.0) / 2.0;
+    y = (projected_y / half_height + 1.0) / 2.0;
     z = z / camera.GetFarsight();
     return Vertex({x, y, z}, vertex.GetColour(), vertex.GetNormal());
 }
-
 std::vector<Triangle> Renderer::ProjectTrianglesToPlane(const Camera& camera,
                                                         std::vector<Triangle>&& enlightened) const {
     std::vector<Triangle> projected;

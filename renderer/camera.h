@@ -17,6 +17,8 @@ public:
     double GetHeight() const;
     double GetWidth() const;
     double GetFarsight() const;
+    void Move(const Vec3& offset);
+    void Rotate(double yaw_angle, double pitch_angle);
 
 private:
     Vec3 focal_point_;

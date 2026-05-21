@@ -5,7 +5,7 @@
 #include "light.h"
 
 namespace renderer {
-inline const Colour default_colour_k = Colour(1.0, 0.2, 0.2);
+inline const Colour default_colour_k = Colour(0.4, 0.6, 0.2);
 
 class Vertex {
 public:

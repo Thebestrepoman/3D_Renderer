@@ -6,19 +6,19 @@
 #include "../utility/world.h"
 
 namespace renderer {
-constexpr ScreenHeight start_height = static_cast<ScreenHeight>(1600);
-constexpr ScreenWidth start_width = static_cast<ScreenWidth>(2560);
+constexpr ScreenHeight start_height = static_cast<ScreenHeight>(800);
+constexpr ScreenWidth start_width = static_cast<ScreenWidth>(1280);
 
-const Vec3 start_focal_point = {0, 0, -1};
-const Vec3 start_screen_angle_point = {-1, 1, 0};
+const Vec3 start_focal_point = {0, 0, -2};
+const Vec3 start_screen_angle_point = {-1.28, 0.8, -3};;
 const Vec3 start_height_vector = {0, -1, 0};
 const Vec3 start_width_vector = {1, 0, 0};
-const double start_camera_height = 1.68;
+const double start_camera_height = 1.6;
 const double start_camera_width = 2.56;
 const double farsight = 100.0;
 const double nearsight = 1e-9;
 
 std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/a.obj"))}};
-std::vector<Light> start_lights = {{Light::CreateDirectionalLight(0.8, {0.0, 0.0, 1.0}, {1.0, 0.0, 0.0})},  {Light::CreateDirectionalLight(0.8, {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0})}};
+std::vector<Light> start_lights = {{Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {1.0, 0.0, 0.0})},  {Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
 
 }  // namespace renderer

@@ -42,4 +42,4 @@
 
 build
 .vscode
-tests
+tests/a.obj

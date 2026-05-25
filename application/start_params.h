@@ -18,7 +18,7 @@ const double start_camera_width = 2.56;
 const double farsight = 100.0;
 const double nearsight = 1e-9;
 
-std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/a.obj"))}};
-std::vector<Light> start_lights = {{Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {1.0, 0.0, 0.0})},  {Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
+std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/teapot.obj"))}};
+std::vector<Light> start_lights = {{Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
 
 }  // namespace renderer

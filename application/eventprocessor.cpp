@@ -25,10 +25,10 @@ void EventProcessor::HandleEvent(const sf::Event& event, Camera& camera) {
                 camera.Move(camera.GetHeightVector() * -speed);
                 break;
             case sf::Keyboard::Left:
-                camera.Rotate(-rotate_speed, 0.0);
+                camera.Rotate(rotate_speed, 0.0);
                 break;
             case sf::Keyboard::Right:
-                camera.Rotate(rotate_speed, 0.0);
+                camera.Rotate(-rotate_speed, 0.0);
                 break;
             case sf::Keyboard::Up:
                 camera.Rotate(0.0, -rotate_speed);

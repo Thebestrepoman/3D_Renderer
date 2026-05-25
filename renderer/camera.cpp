@@ -44,7 +44,7 @@ void Camera::Move(const Vec3& offset) {
     screen_angle_point_ = screen_angle_point_ + offset;
 }
 
-void Camera::Rotate(double yaw_angle, double pitch_angle) {
+void Camera::Rotate(double yaw_angle, double xaw_angle) {
     Vec3 yaw_axis = height_vector_; 
     if (std::abs(yaw_angle) > 1e-6) {
         forward_vector_ = RotateVectorAroundAxis(forward_vector_, yaw_axis, yaw_angle).normalized();
@@ -54,12 +54,12 @@ void Camera::Rotate(double yaw_angle, double pitch_angle) {
         to_screen_angle = RotateVectorAroundAxis(to_screen_angle, yaw_axis, yaw_angle);
         screen_angle_point_ = focal_point_ + to_screen_angle;
     }
-    Vec3 pitch_axis = width_vector_;
-    if (std::abs(pitch_angle) > 1e-6) {
-        forward_vector_ = RotateVectorAroundAxis(forward_vector_, pitch_axis, pitch_angle).normalized();
-        height_vector_ = RotateVectorAroundAxis(height_vector_, pitch_axis, pitch_angle).normalized();
+    Vec3 xaw_axis = width_vector_;
+    if (std::abs(xaw_angle) > 1e-6) {
+        forward_vector_ = RotateVectorAroundAxis(forward_vector_, xaw_axis, xaw_angle).normalized();
+        height_vector_ = RotateVectorAroundAxis(height_vector_, xaw_axis, xaw_angle).normalized();
         Vec3 to_screen_angle = screen_angle_point_ - focal_point_;
-        to_screen_angle = RotateVectorAroundAxis(to_screen_angle, pitch_axis, pitch_angle);
+        to_screen_angle = RotateVectorAroundAxis(to_screen_angle, xaw_axis, xaw_angle);
         screen_angle_point_ = focal_point_ + to_screen_angle;
     }
 }

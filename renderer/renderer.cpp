@@ -83,10 +83,9 @@ std::vector<Triangle> Renderer::ApplyLightToTriangles(const Camera& camera, cons
                             Vec3 light_dir = l.coordinates_ - triangle.GetVi(i).GetCoordinates();
                             double distance_sq = light_dir.dot(light_dir);
                             if (distance_sq > 1e-6) {
-                                double attenuation = 1.0 / distance_sq;
                                 light_res += l.colour_ *
                                              std::max(0.0, light_dir.normalized().dot(triangle.GetVi(i).GetNormal())) *
-                                             l.candella_ * attenuation;
+                                             l.candella_ * (1.0 / distance_sq);
                             }
                         }
                     },

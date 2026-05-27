@@ -23,6 +23,6 @@ const double nearsight = 1e-9;
 const double varepsilon = 1e-6;
 
 inline std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/teapot.obj"))}};
-inline std::vector<Light> start_lights = {{Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
+inline std::vector<Light> start_lights = {{Light::CreateDirectional(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
 
 }  // namespace renderer

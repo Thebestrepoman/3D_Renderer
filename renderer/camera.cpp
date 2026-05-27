@@ -35,7 +35,7 @@ double Camera::GetHeight() const {
 double Camera::GetWidth() const {
     return width_;
 }
-double Camera::GetFarsight() const{
+double Camera::GetFarsight() const {
     return farsight_;
 }
 
@@ -44,22 +44,21 @@ void Camera::Move(const Vec3& offset) {
     screen_angle_point_ = screen_angle_point_ + offset;
 }
 
-void Camera::Rotate(double yaw_angle, double xaw_angle) {
-    Vec3 yaw_axis = height_vector_; 
-    if (std::abs(yaw_angle) > 1e-6) {
-        forward_vector_ = RotateVectorAroundAxis(forward_vector_, yaw_axis, yaw_angle).normalized();
-        width_vector_ = RotateVectorAroundAxis(width_vector_, yaw_axis, yaw_angle).normalized();
-        height_vector_ = RotateVectorAroundAxis(height_vector_, yaw_axis, yaw_angle).normalized();
+void Camera::Rotate(double x_angle, double y_angle) {
+    Vec3 x_axis = height_vector_;
+    if (std::abs(x_angle) > 1e-6) {
+        forward_vector_ = RotateVectorAroundAxis(forward_vector_, x_axis, x_angle).normalized();
+        width_vector_ = RotateVectorAroundAxis(width_vector_, x_axis, x_angle).normalized();
         Vec3 to_screen_angle = screen_angle_point_ - focal_point_;
-        to_screen_angle = RotateVectorAroundAxis(to_screen_angle, yaw_axis, yaw_angle);
+        to_screen_angle = RotateVectorAroundAxis(to_screen_angle, x_axis, x_angle);
         screen_angle_point_ = focal_point_ + to_screen_angle;
     }
-    Vec3 xaw_axis = width_vector_;
-    if (std::abs(xaw_angle) > 1e-6) {
-        forward_vector_ = RotateVectorAroundAxis(forward_vector_, xaw_axis, xaw_angle).normalized();
-        height_vector_ = RotateVectorAroundAxis(height_vector_, xaw_axis, xaw_angle).normalized();
+    Vec3 y_axis = width_vector_;
+    if (std::abs(y_angle) > 1e-6) {
+        forward_vector_ = RotateVectorAroundAxis(forward_vector_, y_axis, y_angle).normalized();
+        height_vector_ = RotateVectorAroundAxis(height_vector_, y_axis, y_angle).normalized();
         Vec3 to_screen_angle = screen_angle_point_ - focal_point_;
-        to_screen_angle = RotateVectorAroundAxis(to_screen_angle, xaw_axis, xaw_angle);
+        to_screen_angle = RotateVectorAroundAxis(to_screen_angle, y_axis, y_angle);
         screen_angle_point_ = focal_point_ + to_screen_angle;
     }
 }

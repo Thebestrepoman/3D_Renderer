@@ -6,7 +6,7 @@ namespace renderer {
 Plane::Plane(const Vec3& normal, const Vec3& point) : normal_(normal), d_(-normal.dot(point)) {
 }
 
-bool Plane::CheckSideForPoint(const Vec3& point) const {
+int Plane::CheckSideForPoint(const Vec3& point) const {
     return (normal_.dot(point) + d_) < varepsilon;
 }
 

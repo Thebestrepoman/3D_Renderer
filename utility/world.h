@@ -7,7 +7,7 @@ namespace renderer {
 class World {
 public:
     World() = default;
-    World(const std::vector<Object>& objects, const std::vector<Light>& lights);
+    World(std::vector<Object>&& objects, std::vector<Light>&& lights);
     const std::vector<Object>& GetObjects() const;
     const std::vector<Light>& GetLights() const;
     void AddObject(const Object& object);

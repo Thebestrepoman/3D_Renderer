@@ -11,7 +11,7 @@ class Plane {
 public:
     Plane(const Vec3& normal, const Vec3& point);
     int CheckSideForPoint(const Vec3& point) const;
-    Vertex IntersectEdgeWithPlane(const Vertex& v1, const Vertex& v2) const;
+    Vertex Intersect(const Vertex& v1, const Vertex& v2) const;
     std::vector<Triangle> ClipTriangleWithPlane(
         const Triangle& triangle) const;
 

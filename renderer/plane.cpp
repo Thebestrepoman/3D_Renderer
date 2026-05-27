@@ -1,11 +1,13 @@
 #include "plane.h"
 
+#include "../application/start_params.h"
+
 namespace renderer {
 Plane::Plane(const Vec3& normal, const Vec3& point) : normal_(normal), d_(-normal.dot(point)) {
 }
 
 bool Plane::CheckSideForPoint(const Vec3& point) const {
-    return (normal_.dot(point) + d_) < 0.00001;
+    return (normal_.dot(point) + d_) < varepsilon;
 }
 
 Vertex Plane::IntersectEdgeWithPlane(const Vertex& v1, const Vertex& v2) const {

@@ -12,13 +12,22 @@ Triangle Triangle::ChangeCoords(const Mat3& rmatrix, const Vec3& move) const {
 const Vertex& Triangle::GetV1() const {
     return vertexes_[0];
 }
+
+const Vec3& Triangle::GetV1Coords() const{
+    return vertexes_[0].GetCoordinates();
+}
 const Vertex& Triangle::GetV2() const {
     return vertexes_[1];
+}
+const Vec3& Triangle::GetV2Coords() const{
+    return vertexes_[1].GetCoordinates();
 }
 const Vertex& Triangle::GetV3() const {
     return vertexes_[2];
 }
-
+const Vec3& Triangle::GetV3Coords() const{
+    return vertexes_[2].GetCoordinates();
+}
 const Vertex& Triangle::GetVi(int i) const {
     return vertexes_[i];
 }

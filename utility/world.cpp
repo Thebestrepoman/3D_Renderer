@@ -13,7 +13,7 @@ const std::vector<Light>& World::GetLights() const {
     return lights_;
 }
 
-void World::AddObject(const Object& object) {
+void World::AddObject(Object&& object) {
     objects_.push_back(object);
 }
 

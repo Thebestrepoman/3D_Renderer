@@ -10,7 +10,7 @@ public:
     World(std::vector<Object>&& objects, std::vector<Light>&& lights);
     const std::vector<Object>& GetObjects() const;
     const std::vector<Light>& GetLights() const;
-    void AddObject(const Object& object);
+    void AddObject(Object&& object);
     void AddLight(const Light& light);
 
 private:

@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../application/start_params.h"
+
 namespace renderer {
 Screen Renderer::Render(const Camera& camera, const World& world, Screen&& screen) const {
     screen.Clear();
@@ -101,20 +103,20 @@ Vertex ProjectiveTransformationForVertex(const Camera& camera, const Vertex& ver
     const Vec3& width_vector = camera.GetWidthVector();
     const Vec3& height_vector = camera.GetHeightVector();
     const Vec3& forward_vector = camera.GetForwardVector();
-    
+
     Vec3 to_point = vertex.GetCoordinates() - focal_point;
-    
+
     double x = to_point.dot(width_vector);
     double y = to_point.dot(height_vector);
     double z = to_point.dot(forward_vector);
-    
-    if (z < 1e-5) {
-        z = 1e-5;
+
+    if (z < varepsilon) {
+        z = varepsilon;
     }
     double projected_x = x / z;
     double projected_y = y / z;
-    double half_width = camera.GetWidth() / 2.0; 
-    double half_height = camera.GetHeight() / 2.0; 
+    double half_width = camera.GetWidth() / 2.0;
+    double half_height = camera.GetHeight() / 2.0;
     x = (projected_x / half_width + 1.0) / 2.0;
     y = (projected_y / half_height + 1.0) / 2.0;
     z = z / camera.GetFarsight();
@@ -131,47 +133,54 @@ std::vector<Triangle> Renderer::ProjectTrianglesToPlane(const Camera& camera,
     return projected;
 }
 
+int ClampToScreen(double value, int max_dimension) {
+    return std::clamp(static_cast<int>(value), 0, max_dimension - 1);
+}
+
+double CalculateTriangleDoubleArea(const Vec3& v1, const Vec3& v2, const Vec3& v3) {
+    return (v3 - v1).cross(v2 - v1).z();
+}
+
 Screen Renderer::DrawProjectedOnScreen(Screen&& screen, std::vector<Triangle>&& projected) const {
     for (const Triangle& triangle : projected) {
-        Vec3 coord1 = triangle.GetV1().GetCoordinates();
-        coord1.x() *= screen.Width();
-        coord1.y() *= screen.Height();
-        Vec3 coord2 = triangle.GetV2().GetCoordinates();
-        coord2.x() *= screen.Width();
-        coord2.y() *= screen.Height();
-        Vec3 coord3 = triangle.GetV3().GetCoordinates();
-        coord3.x() *= screen.Width();
-        coord3.y() *= screen.Height();
-        int minx = std::max(0.0, std::floor(std::min(coord1.x(), std::min(coord2.x(), coord3.x()))));
-        int maxx =
-            std::min(1.0 * (screen.Width() - 1), std::ceil(std::max(coord1.x(), std::max(coord2.x(), coord3.x()))));
-        int miny = std::max(0.0, std::floor(std::min(coord1.y(), std::min(coord2.y(), coord3.y()))));
-        int maxy =
-            std::min(1.0 * (screen.Height() - 1), std::ceil(std::max(coord1.y(), std::max(coord2.y(), coord3.y()))));
-        double square = (coord3 - coord1).cross(coord2 - coord1).z();
-        if (abs(square) <= 1e-6) {
+        Vec3 c1 = triangle.GetV1Coords();
+        c1.x() *= screen.Width();
+        c1.y() *= screen.Height();
+        Vec3 c2 = triangle.GetV2Coords();
+        c2.x() *= screen.Width();
+        c2.y() *= screen.Height();
+        Vec3 c3 = triangle.GetV3Coords();
+        c3.x() *= screen.Width();
+        c3.y() *= screen.Height();
+        int minx = ClampToScreen(std::floor(std::min({c1.x(), c2.x(), c3.x()})), screen.Width());
+        int maxx = ClampToScreen(std::ceil(std::max({c1.x(), c2.x(), c3.x()})), screen.Width());
+        int miny = ClampToScreen(std::floor(std::min({c1.y(), c2.y(), c3.y()})), screen.Height());
+        int maxy = ClampToScreen(std::ceil(std::max({c1.y(), c2.y(), c3.y()})), screen.Height());
+        double double_square = CalculateTriangleDoubleArea(c1, c2, c3);
+        if (std::abs(double_square) <= varepsilon) {
             continue;
         }
         for (int i = miny; i <= maxy; i++) {
             for (int j = minx; j <= maxx; j++) {
                 Vec3 pixel(j + 0.5, i + 0.5, 0);
-                double square1 = (pixel - coord2).cross(coord3 - coord2).z() / square;
-                double square2 = (pixel - coord3).cross(coord1 - coord3).z() / square;
-                double square3 = (pixel - coord1).cross(coord2 - coord1).z() / square;
-                if ((square1 >= -1e-6) && (square2 >= -1e-6) && (square3 >= -1e-6)) {
-                    double newz = coord1.z() * square1 + coord2.z() * square2 + coord3.z() * square3;
-                    if (newz < screen.GetZ(j, i)) {
-                        screen.SetZ(j, i, coord1.z() * square1 + coord2.z() * square2 + coord3.z() * square3);
-                        screen.DrawPixel(
-                            j, i,
-                            (triangle.GetV1().GetColour() * square1 + triangle.GetV2().GetColour() * square2 +
-                             triangle.GetV3().GetColour() * square3)
-                                .Check());
-                    }
+                double w1 = (pixel - c2).cross(c3 - c2).z() / double_square;
+                double w2 = (pixel - c3).cross(c1 - c3).z() / double_square;
+                double w3 = (pixel - c1).cross(c2 - c1).z() / double_square;
+                if (w1 < -varepsilon || w2 < -varepsilon || w3 < -varepsilon) {
+                    continue;
                 }
+                double new_z = c1.z() * w1 + c2.z() * w2 + c3.z() * w3;
+                if (new_z >= screen.GetZ(j, i)) {
+                    continue;
+                }
+                screen.SetZ(j, i, new_z);
+
+                auto interpolated_colour = triangle.GetV1().GetColour() * w1 + triangle.GetV2().GetColour() * w2 +
+                                           triangle.GetV3().GetColour() * w3;
+                screen.DrawPixel(j, i, interpolated_colour.Check());
             }
         }
     }
-    return screen;
+    return std::move(screen);
 }
 }  // namespace renderer

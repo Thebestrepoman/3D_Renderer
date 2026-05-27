@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../renderer/camera.h"
 #include "../renderer/runtime.h"
 #include "../renderer/screen.h"
@@ -18,7 +20,9 @@ const double start_camera_width = 2.56;
 const double farsight = 100.0;
 const double nearsight = 1e-9;
 
-std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/teapot.obj"))}};
-std::vector<Light> start_lights = {{Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
+const double varepsilon = 1e-6;
+
+inline std::vector<Object> start_object = {{std::move(ExtractFromObj("../tests/teapot.obj"))}};
+inline std::vector<Light> start_lights = {{Light::CreateDirectionalLight(1.0, {1.0, 1.0, 1.0}, {-3.0, 0.5, 1.0})}};
 
 }  // namespace renderer

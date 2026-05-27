@@ -20,4 +20,8 @@ namespace renderer {
     sf::RenderWindow* RunTime::GetWindow(){
         return &window_;
     }
+    
+    void RunTime::SetTitle(std::string txt){
+        window_.setTitle(txt);
+    }
 }  // namespace renderer

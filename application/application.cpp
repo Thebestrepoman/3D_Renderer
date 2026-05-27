@@ -15,6 +15,9 @@ Application::Application()
 }
 
 void Application::Run() {
+    sf::Clock fps_clock;  // Таймер для отсчета одной секунды
+    int frame_count = 0;  // Счетчик кадров
+
     while (runtime_.IsOpen()) {
         sf::Event event;
         while (runtime_.PollEvent(event)) {
@@ -26,6 +29,12 @@ void Application::Run() {
         }
         screen_ = std::move(renderer_.Render(camera_, world_, std::move(screen_)));
         view_.show(screen_);
+        frame_count++;
+        if (fps_clock.getElapsedTime().asSeconds() >= 1.0f) {
+            float fps = frame_count / fps_clock.restart().asSeconds();
+            runtime_.SetTitle("Application | FPS: " + std::to_string(static_cast<int>(fps)));
+            frame_count = 0;
+        }
     }
 }
 }  // namespace renderer

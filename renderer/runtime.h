@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+#include <string>
+
 #include "screen.h"
 namespace renderer {
 class RunTime {
@@ -10,7 +12,7 @@ public:
     bool PollEvent(sf::Event& event);
     void Close();
     sf::RenderWindow* GetWindow();
-
+    void SetTitle(std::string txt);
 private:
     sf::RenderWindow window_;
 };
